@@ -1,8 +1,11 @@
+import MnemonicInput from "./components/MnemonicInput";
+
 const App: React.FC = () => {
     return (
-        <div>
-        <h1>Hello, world!</h1>
-        </div>
+        <>
+            <h1>Web3 Blog dApp</h1>
+            <MnemonicInput />
+        </>
     );
 }
 

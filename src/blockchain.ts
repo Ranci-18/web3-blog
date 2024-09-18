@@ -23,3 +23,11 @@ async function createWalletIfNeeded() {
 }
 
 // function to create a signing client
+export async function createWalletandSendTx(mnemonic: string) {
+    createWalletIfNeeded();
+    const client = await SigningStargateClient.connectWithSigner(rpcUrl, wallet);
+    const account = (await wallet.getAccounts())[0];
+    console.log("Account address:", account.address);
+
+    // send a transaction
+}
