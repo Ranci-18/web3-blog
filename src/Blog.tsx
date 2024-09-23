@@ -1,4 +1,4 @@
-import { createHash } from "crypto";
+import SHA256 from "crypto-js/sha256";
 import React, { useState } from "react";
 
 const Blog: React.FC = () => {
@@ -12,7 +12,7 @@ const Blog: React.FC = () => {
 
     const generateHash = async () => {
         setLoading(true);
-        const hash = createHash("sha256").update(blog).digest("hex");
+        const hash = SHA256(blog).toString();
         setHash(hash);
         setLoading(false);
     }

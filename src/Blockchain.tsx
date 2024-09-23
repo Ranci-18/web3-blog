@@ -31,8 +31,36 @@ const Blockchain: React.FC = () => {
         return client;
     }
     */
-    // function to create a signing client and send a transaction
-    async function createWalletandSendTx() {
+    // function to update the blog on the blockchain
+    async function updateBlogOnChain() {
+        const currentWallet = await createWalletIfNeeded(); // to ensure the walet is created
+        // const blockchainClient = await connectToBlockchain(); // to ensure the client is connected
+        const client = await SigningStargateClient.connectWithSigner(rpcUrl, currentWallet);
+        const account = (await currentWallet!.getAccounts())[0];
+        console.log("Account address:", account.address);
+
+        // define transaction details dynamically
+        const amount = coins(0, "uatom");
+        const fee = {
+            amount: coins(200, "uatom"),
+            gas: "180000",
+        }
+        const memo = `Blog reference: ${blogHash}`;
+
+        // update blog transaction
+        try {
+            const result = await client.sendTokens(account.address, account.address, amount, fee, memo);
+            console.log("Transaction sent:", result);
+        } catch (error) {
+            console.error("Error sending transaction:", error);
+        } finally {
+            client.disconnect();
+        }
+
+    }
+
+    // function to send tips to the blog author
+    async function sendTips() {
         const currentWallet = await createWalletIfNeeded(); // to ensure the walet is created
         // const blockchainClient = await connectToBlockchain(); // to ensure the client is connected
         const client = await SigningStargateClient.connectWithSigner(rpcUrl, currentWallet);
@@ -45,9 +73,9 @@ const Blockchain: React.FC = () => {
             amount: coins(200, "uatom"),
             gas: "180000",
         }
-        const memo = `Blog reference: ${blogHash}`;
+        const memo = `Tip to: ${recipient}`;
 
-        // send transaction
+        // send tip transaction
         try {
             const result = await client.sendTokens(account.address, recipient, amount, fee, memo);
             console.log("Transaction sent:", result);
@@ -62,13 +90,20 @@ const Blockchain: React.FC = () => {
     // function to handle form submission
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        await createWalletandSendTx();
+        await updateBlogOnChain();
+    }
+
+    // function to handle sending tips
+    const handleSendTips = async (e: React.FormEvent) => {
+        e.preventDefault();
+        await sendTips();
     }
     
     return (
         <div>
             <h1>Blockchain</h1>
             <form onSubmit={handleSubmit}>
+                <h2>Update Blog on Chain</h2>
                 <label htmlFor="">
                     Blog Hash:
                     <input
@@ -89,8 +124,15 @@ const Blockchain: React.FC = () => {
                     />
                 </label>
                 <br />
+                <button type="submit">update blog TX</button>
+            </form>
+
+            {/* form to send tips */}
+            <form onSubmit={handleSendTips}>
+                <h2>Send tip</h2>
+                <br />
                 <label htmlFor="">
-                    Recipient:
+                    Recipient address:
                     <input
                         type="text"
                         value={recipient}
@@ -109,7 +151,17 @@ const Blockchain: React.FC = () => {
                     />
                 </label>
                 <br />
-                <button type="submit">Send Transaction</button>
+                <label htmlFor="">
+                    Mnemonic:
+                    <input
+                        type="text"
+                        value={mnemonic}
+                        onChange={(e) => setMnemonic(e.target.value)}
+                        required
+                    />
+                </label>
+                <br />
+                <button type="submit">Send Tip TX</button>
             </form>
         </div>
     );
