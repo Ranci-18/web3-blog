@@ -13,7 +13,6 @@ const Blockchain: React.FC = () => {
     // function to create a wallet if none exists
     async function createWalletIfNeeded() {
         if (!wallet) {
-            const mnemonic = process.env.MNEMONIC;
             if (!mnemonic) {
                 throw new Error("Mnemonic is not defined");
             }
@@ -25,16 +24,18 @@ const Blockchain: React.FC = () => {
     }
     
     // function to connect to the Cosmos network
-    async function connectToBlockchain() {
+   /* async function connectToBlockchain() {
+
         const client = await StargateClient.connect(rpcUrl);
         console.log("Connected to Cosmos blockchain:", await client.getChainId());
         return client;
     }
-
+    */
     // function to create a signing client and send a transaction
     async function createWalletandSendTx() {
-        await createWalletIfNeeded(); // to ensure the walet is created
-        const client = await SigningStargateClient.connectWithSigner(rpcUrl, wallet);
+        const currentWallet = await createWalletIfNeeded(); // to ensure the walet is created
+        // const blockchainClient = await connectToBlockchain(); // to ensure the client is connected
+        const client = await SigningStargateClient.connectWithSigner(rpcUrl, currentWallet);
         const account = (await wallet!.getAccounts())[0];
         console.log("Account address:", account.address);
 
