@@ -36,7 +36,7 @@ const Blockchain: React.FC = () => {
         const currentWallet = await createWalletIfNeeded(); // to ensure the walet is created
         // const blockchainClient = await connectToBlockchain(); // to ensure the client is connected
         const client = await SigningStargateClient.connectWithSigner(rpcUrl, currentWallet);
-        const account = (await wallet!.getAccounts())[0];
+        const account = (await currentWallet!.getAccounts())[0];
         console.log("Account address:", account.address);
 
         // define transaction details dynamically
