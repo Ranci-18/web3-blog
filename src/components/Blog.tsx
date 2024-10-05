@@ -1,5 +1,6 @@
 import SHA256 from "crypto-js/sha256";
 import React, { useState } from "react";
+import '../sass/blog.sass';
 
 const Blog: React.FC = () => {
     const [blog, setBlog] = useState<string>("");
@@ -18,13 +19,19 @@ const Blog: React.FC = () => {
     }
 
     return (
-        <div>
-            <h1>Blog</h1>
-            <textarea
-                value={blog}
-                onChange={handleBlogChange}
-                placeholder="Write your blog here..."
-            />
+        <div className="blog">
+            <label htmlFor="blog">
+                <p>Write blog here!</p>
+                <textarea
+                    value={blog}
+                    onChange={handleBlogChange}
+                    placeholder="Write your blog here..."
+                    id="blog"
+                    cols={40}
+                    rows={10}
+                />
+            </label>
+            
             <button onClick={generateHash} disabled={loading}>
                 {loading ? "Loading..." : "Hash Blog"}
             </button>

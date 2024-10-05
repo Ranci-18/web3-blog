@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { StargateClient, SigningStargateClient } from "@cosmjs/stargate";
 import { coins, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
+import '../sass/blockchain.sass';
 
 const Blockchain: React.FC = () => {
     const [blogHash, setBlogHash] = useState<string>(""); // hash of the blog
@@ -101,7 +102,7 @@ const Blockchain: React.FC = () => {
     }
     
     return (
-        <div>
+        <div className="blockchain">
             <h1>Blockchain</h1>
             <form onSubmit={handleSubmit}>
                 <h2>Update Blog on Chain</h2>
