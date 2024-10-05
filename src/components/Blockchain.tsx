@@ -128,11 +128,11 @@ const Blockchain: React.FC = () => {
                 <br />
                 <button type="submit">update blog TX</button>
             </form>
-
+            <hr />
             {/* form to send tips */}
             <form onSubmit={handleSendTips}>
                 <h2>Send tip</h2>
-                <br />
+                
                 <label htmlFor="">
                     Recipient address:
                     <input
