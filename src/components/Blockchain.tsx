@@ -9,13 +9,13 @@ const Blockchain: React.FC = () => {
     const [amountInUatom, setAmountinUatom] = useState<string>(""); // amount to send
     const [mnemonic1, setMnemonic1] = useState<string>(""); // mnemonic1
     const [mnemonic2, setMnemonic2] = useState<string>(""); // mnemonic2
-    const rpcUrl = "http://0.0.0.0:26657"; // rpc endpoint
+    const rpcUrl = "http://0.0.0.0:26657/"; // rpc endpoint
     let wallet: DirectSecp256k1HdWallet; // wallet to sign transactions
 
     // function to create a wallet if none exists
-    async function createWalletIfNeeded() {
+    async function createWalletIfNeeded(mnemonic: string) {
         if (!wallet) {
-            if (!mnemonic1) {
+            if (!mnemonic) {
                 throw new Error("Mnemonic is not defined");
             }
             wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic1, {
@@ -35,35 +35,40 @@ const Blockchain: React.FC = () => {
     */
     // function to update the blog on the blockchain
     async function updateBlogOnChain() {
-        const currentWallet = await createWalletIfNeeded(); // to ensure the walet is created
-        // const blockchainClient = await connectToBlockchain(); // to ensure the client is connected
-        const client = await SigningStargateClient.connectWithSigner(rpcUrl, currentWallet);
-        const account = (await currentWallet!.getAccounts())[0];
-        console.log("Account address:", account.address);
-
-        // define transaction details dynamically
-        const amount = coins(0, "uatom");
-        const fee = {
-            amount: coins(200, "uatom"),
-            gas: "180000",
-        }
-        const memo = `Blog reference: ${blogHash}`;
-
-        // update blog transaction
         try {
-            const result = await client.sendTokens(account.address, account.address, amount, fee, memo);
-            console.log("Transaction sent:", result);
-        } catch (error) {
-            console.error("Error sending transaction:", error);
-        } finally {
-            client.disconnect();
+            const currentWallet = await createWalletIfNeeded(mnemonic1); // to ensure the walet is created
+            // const blockchainClient = await connectToBlockchain(); // to ensure the client is connected
+            const client = await SigningStargateClient.connectWithSigner(rpcUrl, currentWallet);
+            const account = (await currentWallet!.getAccounts())[0];
+            console.log("Account address:", account.address);
+
+            // define transaction details dynamically
+            const amount = coins(0, "uatom");
+            const fee = {
+                amount: coins(200, "uatom"),
+                gas: "180000",
+            }
+            const memo = `Blog reference: ${blogHash}`;
+
+            // update blog transaction
+            try {
+                const result = await client.sendTokens(account.address, account.address, amount, fee, memo);
+                console.log("Transaction sent:", result);
+            } catch (error) {
+                console.error("Error sending transaction:", error);
+            } finally {
+                client.disconnect();
+            }
+        } catch(error) {
+            console.log("Failed to update the blockchain:", error);
         }
+        
 
     }
 
     // function to send tips to the blog author
     async function sendTips() {
-        const currentWallet = await createWalletIfNeeded(); // to ensure the walet is created
+        const currentWallet = await createWalletIfNeeded(mnemonic2); // to ensure the walet is created
         // const blockchainClient = await connectToBlockchain(); // to ensure the client is connected
         const client = await SigningStargateClient.connectWithSigner(rpcUrl, currentWallet);
         const account = (await currentWallet!.getAccounts())[0];
@@ -117,7 +122,7 @@ const Blockchain: React.FC = () => {
                 </label>
                 <br />
                 <label htmlFor="">
-                    Mnemonic:
+                    Update Blog Mnemonic:
                     <input
                         type="text"
                         value={mnemonic1}
@@ -154,7 +159,7 @@ const Blockchain: React.FC = () => {
                 </label>
                 <br />
                 <label htmlFor="">
-                    Mnemonic:
+                    Tip Mnemonic:
                     <input
                         type="text"
                         value={mnemonic2}

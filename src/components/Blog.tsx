@@ -35,7 +35,9 @@ const Blog: React.FC = () => {
             <button onClick={generateHash} disabled={loading}>
                 {loading ? "Loading..." : "Hash Blog"}
             </button>
-            {hash && <p>Hash: {hash}</p>}
+            <div className="hash">
+                {hash && <p>Hash: {hash}</p>}
+            </div>
         </div>
     );
 }
