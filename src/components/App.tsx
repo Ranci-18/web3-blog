@@ -7,7 +7,6 @@ const App: React.FC = () => {
         <div className="app">
             <h1>Web3 Blog dApp</h1>
             <div>
-                <Blog />
                 <Blockchain />
             </div>
         </div>
