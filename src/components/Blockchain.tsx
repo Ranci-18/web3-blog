@@ -12,9 +12,12 @@ interface DecodedTx {
 
 // Add this utility function to decode transactions
 function decodeTx(tx: Uint8Array): DecodedTx {
-    // Implement the decoding logic here
-    // This is a placeholder; replace with actual decoding logic
-    return { body: { memo: "Decoded memo" } }; // Return the decoded transaction object with a body
+    // Implement the actual decoding logic here
+    // Example: Parse the Uint8Array to extract the memo
+    const decoded = {
+        memo: new TextDecoder().decode(tx) // Decode the Uint8Array to a string
+    };
+    return { body: { memo: decoded.memo } }; // Return the decoded transaction object with the actual memo
 }
 
 const Blockchain: React.FC = () => {
@@ -33,7 +36,7 @@ const Blockchain: React.FC = () => {
             throw new Error("Mnemonic is not defined");
         }
         return await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
-            prefix: "cosmos", // Make sure this matches your local chain's prefix
+            prefix: "cosmos",
         });
     }
 
