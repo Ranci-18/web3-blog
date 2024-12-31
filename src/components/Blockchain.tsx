@@ -12,12 +12,16 @@ interface DecodedTx {
 
 // Add this utility function to decode transactions
 function decodeTx(tx: Uint8Array): DecodedTx {
-    // Implement the actual decoding logic here
-    // Example: Parse the Uint8Array to extract the memo
-    const decoded = {
-        memo: new TextDecoder().decode(tx) // Decode the Uint8Array to a string
-    };
-    return { body: { memo: decoded.memo } }; // Return the decoded transaction object with the actual memo
+    // Decode the Uint8Array to a string
+    const decodedString = new TextDecoder().decode(tx);
+    
+    // Split the decoded string by the delimiter (assuming '\u0012' is used as a delimiter)
+    const parts = decodedString.split('\u0012');
+
+    // Assuming the user content is the 5th part (index 4) based on the sample output
+    const userContent = parts[4] || ""; // Fallback to an empty string if not found
+
+    return { body: { memo: userContent } }; // Return the decoded transaction object with the user content
 }
 
 const Blockchain: React.FC = () => {
